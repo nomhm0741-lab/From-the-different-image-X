@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>من المختلف؟</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#031525;--panel:#06182aee;--blue:#08a9ff;--gold:#ffd11a;--red:#ef2944;--text:#f7fbff}
+*{box-sizing:border-box} body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% -10%,#164c6d 0,#071b2d 42%,#020a12 100%);color:var(--text);font-family:Cairo,system-ui,sans-serif;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(2,18,32,.15),rgba(0,0,0,.6)),radial-gradient(circle at 15% 35%,rgba(0,150,255,.08),transparent 30%),radial-gradient(circle at 85% 45%,rgba(0,110,190,.08),transparent 30%);z-index:-1}
+.wrap{max-width:1500px;margin:auto;padding:20px 22px 35px}
+.top{display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:center}
+.player{background:linear-gradient(145deg,#07182b,#030d19);border:2px solid #075a91;border-radius:28px;padding:14px 22px;display:flex;align-items:center;gap:16px;min-height:108px;box-shadow:0 12px 35px #0008}
+.player.p2{border-color:#a20e2a}.avatar{width:76px;height:76px;border-radius:50%;overflow:hidden;border:4px solid var(--blue);background:#122c43;flex:0 0 auto}.p2 .avatar{border-color:var(--red)}.avatar img{width:100%;height:100%;object-fit:cover}
+.player .name{font-size:20px;font-weight:900}.score{margin-top:5px;display:inline-flex;align-items:center;gap:7px;background:#062a48;border:2px solid #0698ee;border-radius:30px;padding:3px 18px;font-size:24px;font-weight:900}.p2 .score{background:#481020;border-color:#e32b46}.star{color:var(--gold)}
+.title{text-align:center}.title h1{margin:0;font-size:46px;line-height:1;font-weight:900;color:var(--gold);text-shadow:0 4px 0 #111,0 0 22px #00aaff55}.title p{margin:8px 0 0;font-size:18px;color:#dce9f5;font-weight:700}
+.magnify{font-size:50px;filter:drop-shadow(0 0 8px #00aaff)}
+.status{margin:20px auto 18px;display:flex;justify-content:center;gap:14px;align-items:center}.pill{background:#06192cdd;border:2px solid #087fcb;border-radius:40px;padding:12px 28px;font-weight:900;font-size:20px;box-shadow:0 8px 25px #0007}.timer{min-width:180px;text-align:center}.timer.danger{border-color:var(--red);color:#ff8794}
+.board{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.card{background:#061526;border:3px solid #111;border-radius:18px;padding:0;overflow:hidden;box-shadow:0 10px 25px #0009;position:relative;transition:.18s transform,.18s border-color,.18s filter;cursor:pointer}
+.card:hover{transform:translateY(-4px);border-color:#00a8ff}.card.disabled{cursor:default;filter:grayscale(.2) brightness(.7)}.card img{display:block;width:100%;height:235px;object-fit:cover;background:#000}.card-footer{padding:10px;text-align:center;background:linear-gradient(#071a2c,#04101d);font-weight:900;font-size:19px}
+.card button{border:0;border-radius:12px;padding:8px 10px;margin:6px 3px 0;font-family:inherit;font-weight:900;cursor:pointer;background:#087ec0;color:white}.card button.p2btn{background:#b21e39}
+.overlay{position:absolute;inset:0;background:#03101bcc;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:.2s;font-size:30px;font-weight:900}.card.correct .overlay{opacity:1;background:#0b8b45cc}.card.wrong .overlay{opacity:1;background:#a21c32cc}
+.bottom{display:grid;grid-template-columns:1fr 1.6fr 1fr;gap:18px;margin-top:22px}.panel{background:#05172ae8;border:2px solid #0a5b8e;border-radius:22px;padding:18px;box-shadow:0 12px 30px #0008}.panel h2{margin:0 0 8px;color:var(--gold);font-size:23px}.rules{line-height:1.9;color:#d9e8f5}.rounds{display:flex;flex-wrap:wrap;gap:10px}.round{width:62px;height:62px;border-radius:14px;background:#0a2236;border:2px solid #11618f;display:grid;place-items:center;font-size:20px;font-weight:900}.round.active{background:#ffd21b;color:#081521;border-color:#fff0a0}.round.done{background:#0b7149;color:#fff;border-color:#2ee39c}.actions{display:flex;justify-content:center;gap:10px;margin-top:15px}.actions button{font-family:inherit;border:0;border-radius:13px;padding:11px 18px;font-weight:900;cursor:pointer}.next{background:var(--gold)}.reset{background:#12334d;color:#fff}
+.modal{position:fixed;inset:0;background:#000a;display:none;align-items:center;justify-content:center;padding:20px;z-index:5}.modal.show{display:flex}.modalbox{max-width:560px;width:100%;background:#06192b;border:2px solid #0b86cf;border-radius:25px;padding:28px;text-align:center;box-shadow:0 20px 80px #000}.modalbox h2{color:var(--gold);font-size:32px;margin:0 0 8px}.modalbox input{width:100%;margin:8px 0;padding:13px;border-radius:12px;border:2px solid #145a80;background:#02101c;color:#fff;font-family:inherit;font-size:17px}.start{width:100%;margin-top:10px;padding:14px;border:0;border-radius:13px;background:var(--gold);font:900 18px Cairo;cursor:pointer}
+@media(max-width:1100px){.board{grid-template-columns:repeat(3,1fr)}.bottom{grid-template-columns:1fr 1fr}.title h1{font-size:38px}}
+@media(max-width:720px){.wrap{padding:10px}.top{grid-template-columns:1fr 1fr}.title{grid-column:1/-1;grid-row:1}.player{min-height:85px;padding:8px 10px}.avatar{width:55px;height:55px}.player .name{font-size:15px}.score{font-size:18px;padding:2px 10px}.board{grid-template-columns:repeat(2,1fr);gap:9px}.card img{height:180px}.bottom{grid-template-columns:1fr}.title h1{font-size:32px}.status{gap:6px}.pill{padding:9px 13px;font-size:16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="top">
+    <div class="player">
+      <div class="avatar"><img src="assets/player1.jpg" onerror="this.style.display='none'"></div>
+      <div><div class="name" id="p1Name">اللاعب 1</div><div class="score"><span class="star">★</span><span id="p1Score">0</span></div></div>
+    </div>
+    <div class="title"><div class="magnify">🔎</div><h1>من المختلف؟</h1><p>اختر الصورة المختلفة قبل خصمك!</p></div>
+    <div class="player p2">
+      <div class="avatar"><img src="assets/player2.jpg" onerror="this.style.display='none'"></div>
+      <div><div class="name" id="p2Name">اللاعب 2</div><div class="score"><span class="star">★</span><span id="p2Score">0</span></div></div>
+    </div>
+  </section>
+
+  <div class="status"><div class="pill">الجولة <span id="roundNo">1</span>/<span id="roundTotal">7</span></div><div class="pill timer" id="timer">00:20</div></div>
+  <main class="board" id="board"></main>
+
+  <section class="bottom">
+    <div class="panel"><h2>🏆 قواعد اللعبة</h2><div class="rules">
+      • 5 صور في كل جولة.<br>
+      • اختر الصورة التي تريد الإجابة عنها.<br>
+      • اللاعب الأسرع يحصل على النقطة.<br>
+      • أول لاعب يصل إلى 3 نقاط يفوز بالمباراة.
+    </div></div>
+    <div class="panel"><h2 style="text-align:center;color:#dce9f5">الجولات</h2><div class="rounds" id="rounds"></div>
+      <div class="actions"><button class="next" id="nextBtn">الجولة التالية</button><button class="reset" id="resetBtn">إعادة المباراة</button></div>
+    </div>
+    <div class="panel"><h2>⚡ اللاعب الأسرع</h2><div class="rules">كل إجابة صحيحة تمنح نقطة للاعب الذي ضغط أولاً. عند وصول أحد اللاعبين إلى 3 نقاط تظهر شاشة الفائز.</div></div>
+  </section>
+</div>
+
+<div class="modal show" id="setup">
+  <div class="modalbox">
+    <h2>ابدأ المباراة</h2>
+    <p>اكتب أسماء اللاعبين ثم ابدأ.</p>
+    <input id="name1" placeholder="اسم اللاعب 1" maxlength="18">
+    <input id="name2" placeholder="اسم اللاعب 2" maxlength="18">
+    <button class="start" id="startBtn">ابدأ اللعب</button>
+  </div>
+</div>
+<div class="modal" id="winner"><div class="modalbox"><h2 id="winnerTitle">الفائز!</h2><p id="winnerText"></p><button class="start" id="playAgain">العب مرة أخرى</button></div></div>
+
+<script>
+const rounds = [["card-01.jpg", "card-02.jpg", "card-03.jpg", "card-04.jpg", "card-05.jpg"], ["card-06.jpg", "card-07.jpg", "card-08.jpg", "card-09.jpg", "card-10.jpg"], ["card-11.jpg", "card-12.jpg", "card-13.jpg", "card-14.jpg", "card-15.jpg"], ["card-16.jpg", "card-17.jpg", "card-18.jpg", "card-19.jpg", "card-20.jpg"], ["card-21.jpg", "card-22.jpg", "card-23.jpg", "card-24.jpg", "card-25.jpg"], ["card-26.jpg", "card-27.jpg", "card-28.jpg", "card-29.jpg", "card-30.jpg"], ["card-31.jpg", "card-32.jpg", "card-01.jpg", "card-02.jpg", "card-03.jpg"]];
+let round=0, scores=[0,0], locked=false, timerId=null, seconds=20, started=false;
+const $=id=>document.getElementById(id);
+
+function renderRounds(){
+  $('rounds').innerHTML=rounds.map((_,i)=>`<div class="round ${i===round?'active':''} ${i<round?'done':''}">${i+1}</div>`).join('');
+}
+function startTimer(){
+  clearInterval(timerId); seconds=20; $('timer').textContent='00:20'; $('timer').classList.remove('danger');
+  timerId=setInterval(()=>{seconds--; $('timer').textContent='00:'+String(seconds).padStart(2,'0'); if(seconds<=5)$('timer').classList.add('danger'); if(seconds<=0){clearInterval(timerId); locked=true; document.querySelectorAll('.card').forEach(c=>c.classList.add('disabled'));}},1000);
+}
+function renderRound(){
+  locked=false; renderRounds(); $('roundNo').textContent=round+1;
+  $('board').innerHTML=rounds[round].map((src,i)=>`
+    <article class="card" data-i="${i}">
+      <img src="assets/${src}" alt="لغز ${i+1}">
+      <div class="card-footer">
+        اختر من هو المختلف
+        <div>
+          <button onclick="answer(${i},0,event)">اللاعب 1</button>
+          <button class="p2btn" onclick="answer(${i},1,event)">اللاعب 2</button>
+        </div>
+      </div>
+      <div class="overlay"></div>
+    </article>`).join('');
+  startTimer();
+}
+function answer(i,p,e){
+  e.stopPropagation(); if(locked)return; locked=true; clearInterval(timerId);
+  const card=document.querySelector(`.card[data-i="${i}"]`);
+  card.classList.add('correct'); card.querySelector('.overlay').textContent=`نقطة لـ ${p===0?$('p1Name').textContent:$('p2Name').textContent}`;
+  scores[p]++; $('p1Score').textContent=scores[0]; $('p2Score').textContent=scores[1];
+  document.querySelectorAll('.card').forEach(c=>c.classList.add('disabled'));
+  if(scores[p]>=3){setTimeout(()=>showWinner(p),500); return;}
+}
+function showWinner(p){
+  $('winnerTitle').textContent='🎉 '+(p===0?$('p1Name').textContent:$('p2Name').textContent)+' يفوز!';
+  $('winnerText').textContent=`النتيجة: ${scores[0]} - ${scores[1]}`;
+  $('winner').classList.add('show');
+}
+$('nextBtn').onclick=()=>{if(round<rounds.length-1){round++;renderRound();}else{alert('انتهت كل الجولات!');}};
+$('resetBtn').onclick=()=>location.reload();
+$('playAgain').onclick=()=>location.reload();
+$('startBtn').onclick=()=>{
+  $('p1Name').textContent=$('name1').value.trim()||'اللاعب 1';
+  $('p2Name').textContent=$('name2').value.trim()||'اللاعب 2';
+  $('setup').classList.remove('show'); started=true; renderRound();
+};
+renderRounds();
+</script>
+</body>
+</html>
